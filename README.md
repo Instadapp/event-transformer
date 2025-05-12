@@ -1,72 +1,109 @@
-# packageName
+# Event Transformer Schema Creation Guide
 
-<!-- automd:badges color=yellow -->
+## createAbiSchema Function
 
-[![npm version](https://img.shields.io/npm/v/packageName?color=yellow)](https://npmjs.com/package/packageName)
-[![npm downloads](https://img.shields.io/npm/dm/packageName?color=yellow)](https://npm.chart.dev/packageName)
+The `createAbiSchema` function is a utility for transforming Ethereum event logs into structured, type-safe data with automatic value conversions. It helps you define how raw event data should be parsed and transformed.
 
-<!-- /automd -->
+### Basic Structure
 
-This is my package description.
-
-## Usage
-
-Install the package:
-
-```sh
-# ✨ Auto-detect (supports npm, yarn, pnpm, deno and bun)
-npx nypm install packageName
+```typescript
+createAbiSchema({
+  signature: string,
+  fields: ({ transformer }) => Record<string, FieldTransformer>
+})
 ```
 
-Import:
+### Parameters
 
-<!-- automd:jsimport cdn name="pkg" -->
+1. `signature`: Ethereum event signature string that defines:
+   - Event name
+   - Parameter types and names
+   - Event structure and format
 
-**ESM** (Node.js, Bun, Deno)
+2. `fields`: A function that receives a transformer object and returns field definitions
 
-```js
-import {} from "pkg";
+### Field Transformers
+
+Each field can use the following transformer methods:
+
+- `toToken()`: Converts address to token object
+- `toDecimals(token)`: Converts value to proper decimal representation
+- `toPercentage(base)`: Converts value to percentage (usually with base 1e18)
+- `toAddress()`: Formats address with checksum
+- `toVault()`: Converts address to vault object
+
+### Example Usage
+
+```typescript
+const schema = createAbiSchema({
+  signature: "event LogUpdateExchangePrices(address token, uint256 supplyExchangePrice, uint256 borrowExchangePrice, uint256 borrowRate, uint256 utilization)",
+  fields: ({ transformer }) => ({
+    // Transform token address
+    token: ({ value }) => {
+      return transformer.transform(value).toToken();
+    },
+    // Transform price with token decimals
+    supplyExchangePrice: ({ value, item }) => {
+      return transformer
+        .transform(value)
+        .toDecimals(transformer.transform(item.token).toToken());
+    },
+    // Transform percentage values
+    borrowRate: ({ value }) => {
+      return transformer.transform(value).toPercentage(1e18);
+    }
+  })
+});
 ```
 
-**CDN** (Deno, Bun and Browsers)
+### Field Transformer Context
 
-```js
-import {} from "https://esm.sh/pkg";
+Each field transformer receives an object with:
+
+- `value`: The raw value from the event log
+- `item`: Access to other fields in the event
+
+### Common Patterns
+
+1. Token Amount Transformation:
+```typescript
+amount: ({ value, item }) => {
+  const token = transformer.transform(item.token).toToken();
+  return transformer.transform(value).toDecimals(token);
+}
 ```
 
-<!-- /automd -->
+2. Percentage Values:
+```typescript
+rate: ({ value }) => {
+  return transformer.transform(value).toPercentage(1e18);
+}
+```
 
-## Development
+3. Address Formatting:
+```typescript
+account: ({ value }) => {
+  return transformer.transform(value).toAddress();
+}
+```
 
-<details>
+### Testing Schemas
 
-<summary>local development</summary>
+Test your schemas by:
+1. Creating test events with known values
+2. Using `resolveFieldTransformer` to process the event
+3. Verifying the transformed output
 
-- Clone this repository
-- Install latest LTS version of [Node.js](https://nodejs.org/en/)
-- Enable [Corepack](https://github.com/nodejs/corepack) using `corepack enable`
-- Install dependencies using `pnpm install`
-- Run interactive tests using `pnpm dev`
+```typescript
+const event = {
+  address: "0x...",
+  topics: [...],
+  data: "0x..."
+};
 
-</details>
+const resolved = resolveFieldTransformer(schema, transformer, event);
+expect(resolved.token.__type).toBe("token");
+expect(typeof resolved.amount).toBe("string");
+```
 
-## License
-
-<!-- automd:contributors license=MIT -->
-
-Published under the [MIT](https://github.com/unjs/packageName/blob/main/LICENSE) license.
-Made by [community](https://github.com/unjs/packageName/graphs/contributors) 💛
-<br><br>
-<a href="https://github.com/unjs/packageName/graphs/contributors">
-<img src="https://contrib.rocks/image?repo=unjs/packageName" />
-</a>
-
-<!-- /automd -->
-
-<!-- automd:with-automd -->
-
----
-
-_🤖 auto updated with [automd](https://automd.unjs.io)_
-
-<!-- /automd -->
+Remember to test edge cases and different value formats to ensure robust transformation.
