@@ -4,6 +4,7 @@ import type {
   AbiEventParameterToPrimitiveType,
   AbiParameter,
 } from "viem";
+import type { EventTransformer } from "../transformer";
 
 type Prev = [never, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
@@ -61,3 +62,19 @@ export type EventTransformSchema<TEvent extends AbiEvent> = {
 
 export type ExtractEvent<T extends string> =
   ParseAbiItem<T> extends infer R ? (R extends AbiEvent ? R : never) : never;
+
+export type CreateAbiSchemaConfig<
+  TSignature extends string,
+  TEvent extends AbiEvent = ExtractEvent<TSignature>,
+> = {
+  signature: TSignature;
+  fields: (params: {
+    get: (path: LeafPaths<EventTransformSchema<TEvent>>) => any;
+    transformer: EventTransformer;
+  }) => EventTransformSchema<TEvent>;
+};
+
+export type CreateAbiSchemaReturn<
+  TSignature extends string,
+  TEvent extends AbiEvent = ExtractEvent<TSignature>,
+> = CreateAbiSchemaConfig<TSignature, TEvent>;

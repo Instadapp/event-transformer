@@ -3,9 +3,9 @@ import { decodeEventLog, getAddress, parseAbiItem, type AbiEvent } from "viem";
 import BigNumber from "bignumber.js";
 import lodashGet from "lodash/get";
 import type {
-  EventTransformSchema,
+  CreateAbiSchemaConfig,
+  CreateAbiSchemaReturn,
   ExtractEvent,
-  LeafPaths,
 } from "./types/transformer";
 import type {
   ILendingTokensResponse,
@@ -163,24 +163,21 @@ export class EventTransformer {
 export function createAbiSchema<
   TSignature extends string,
   TEvent extends AbiEvent = ExtractEvent<TSignature>,
->(config: {
-  signature: TSignature;
-  fields: ({
-    get,
-  }: {
-    get: (path: LeafPaths<EventTransformSchema<TEvent>>) => any;
-    transformer: EventTransformer;
-  }) => EventTransformSchema<TEvent>;
-}) {
-  return config as ReturnType<typeof createAbiSchema>;
+>(
+  config: CreateAbiSchemaConfig<TSignature, TEvent>,
+): CreateAbiSchemaReturn<TSignature, TEvent> {
+  return config;
 }
 
-export function resolveFieldTransformer(
-  fieldTransformer: ReturnType<typeof createAbiSchema>,
+export function resolveFieldTransformer<
+  TSignature extends string,
+  TEvent extends AbiEvent = ExtractEvent<TSignature>,
+>(
+  fieldTransformer: CreateAbiSchemaReturn<TSignature, TEvent>,
   dataTransformer: EventTransformer,
   raw: SimulationRaw,
 ) {
-  const parsedAbi = parseAbiItem(fieldTransformer.signature);
+  const parsedAbi = parseAbiItem(fieldTransformer.signature as string);
 
   const { args } = decodeEventLog({
     abi: [parsedAbi],
