@@ -9,13 +9,14 @@ The `createAbiSchema` function is a utility for transforming Ethereum event logs
 ```typescript
 createAbiSchema({
   signature: string,
-  fields: ({ transformer }) => Record<string, FieldTransformer>
-})
+  fields: ({ transformer }) => Record<string, FieldTransformer>,
+});
 ```
 
 ### Parameters
 
 1. `signature`: Ethereum event signature string that defines:
+
    - Event name
    - Parameter types and names
    - Event structure and format
@@ -36,7 +37,8 @@ Each field can use the following transformer methods:
 
 ```typescript
 const schema = createAbiSchema({
-  signature: "event LogUpdateExchangePrices(address token, uint256 supplyExchangePrice, uint256 borrowExchangePrice, uint256 borrowRate, uint256 utilization)",
+  signature:
+    "event LogUpdateExchangePrices(address token, uint256 supplyExchangePrice, uint256 borrowExchangePrice, uint256 borrowRate, uint256 utilization)",
   fields: ({ transformer }) => ({
     // Transform token address
     token: ({ value }) => {
@@ -51,8 +53,8 @@ const schema = createAbiSchema({
     // Transform percentage values
     borrowRate: ({ value }) => {
       return transformer.transform(value).toPercentage(1e18);
-    }
-  })
+    },
+  }),
 });
 ```
 
@@ -66,30 +68,34 @@ Each field transformer receives an object with:
 ### Common Patterns
 
 1. Token Amount Transformation:
+
 ```typescript
-amount: ({ value, item }) => {
+({ value, item }) => {
   const token = transformer.transform(item.token).toToken();
   return transformer.transform(value).toDecimals(token);
-}
+};
 ```
 
 2. Percentage Values:
+
 ```typescript
-rate: ({ value }) => {
+({ value }) => {
   return transformer.transform(value).toPercentage(1e18);
-}
+};
 ```
 
 3. Address Formatting:
+
 ```typescript
-account: ({ value }) => {
+({ value }) => {
   return transformer.transform(value).toAddress();
-}
+};
 ```
 
 ### Testing Schemas
 
 Test your schemas by:
+
 1. Creating test events with known values
 2. Using `resolveFieldTransformer` to process the event
 3. Verifying the transformed output

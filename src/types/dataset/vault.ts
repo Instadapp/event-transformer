@@ -92,7 +92,6 @@ interface Pex {
   borrowToken1ExchangePrice: string;
 }
 
-
 export interface SupplyDexData {
   id: string;
   address: Address;
@@ -113,7 +112,7 @@ export interface IVaultRewards {
   token: VaultToken;
   rate: string;
   endBlock: number;
-  type: 'borrow' | 'supply';
+  type: "borrow" | "supply";
 }
 
 interface VaultRate {
@@ -155,7 +154,6 @@ interface LiquidityBorrowDataToken {
   borrowable: string;
   borrowLimitUtilization: string;
 }
-
 
 interface LiquiditySupplyDataToken {
   modeWithInterest: boolean;

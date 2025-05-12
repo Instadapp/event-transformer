@@ -1,5 +1,10 @@
 import type { Address } from "viem";
-import type { IVaultRewards, LiquiditySupplyData, SupplyDexData, VaultToken } from "./vault";
+import type {
+  IVaultRewards,
+  LiquiditySupplyData,
+  SupplyDexData,
+  VaultToken,
+} from "./vault";
 
 export interface ILendingTokensResponse {
   totalAssetsInUsd: string;
@@ -37,7 +42,6 @@ export interface ISmartLendingToken {
   };
 }
 
-
 export interface ILendingToken {
   address: Address;
   eip2612Deposits: boolean;
@@ -71,7 +75,6 @@ interface ITokenRewards {
   token: string;
   apr: string;
 }
-
 
 interface LiquiditySupplyDataToken {
   modeWithInterest: boolean;

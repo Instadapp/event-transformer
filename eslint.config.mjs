@@ -1,13 +1,13 @@
 import unjs from "eslint-config-unjs";
 
 export default unjs({
-  
   ignores: [
     // ignore paths
+    "**/*.md",
   ],
   rules: {
     // rule overrides
-    "unicorn/require-number-to-fixed-digits-argument": "off"
+    "unicorn/require-number-to-fixed-digits-argument": "off",
   },
   markdown: {
     rules: {
