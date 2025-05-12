@@ -1,8 +1,8 @@
 {
-  "name": "packageName",
+  "name": "event-transformer",
   "version": "0.0.0",
   "description": "",
-  "repository": "unjs/packageName",
+  "repository": "Instadapp/event-transformer",
   "license": "MIT",
   "sideEffects": false,
   "type": "module",
