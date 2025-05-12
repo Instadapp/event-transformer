@@ -1,4 +1,4 @@
-import type { Address } from "abitype";
+import type { Address } from "viem";
 import type { VaultToken } from "./vault";
 
 export interface IDex {
