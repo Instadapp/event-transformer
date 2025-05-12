@@ -4,6 +4,7 @@ export default unjs({
   ignores: [
     // ignore paths
     "**/*.md",
+    "**/*.yaml",
   ],
   rules: {
     // rule overrides
