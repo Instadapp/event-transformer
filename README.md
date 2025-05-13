@@ -29,7 +29,7 @@ Each field can use the following transformer methods:
 
 - `toToken()`: Converts address to token object
 - `toDecimals(token)`: Converts value to proper decimal representation
-- `toPercentage(base)`: Converts value to percentage (usually with base 1e18)
+- `toPercentage(divider)`: Format value as percentage
 - `toAddress()`: Formats address with checksum
 - `toVault()`: Converts address to vault object
 
@@ -52,7 +52,7 @@ const schema = createAbiSchema({
     },
     // Transform percentage values
     borrowRate: ({ value }) => {
-      return transformer.transform(value).toPercentage(1e18);
+      return transformer.transform(value).toPercentage(100);
     },
   }),
 });
@@ -80,7 +80,7 @@ Each field transformer receives an object with:
 
 ```typescript
 ({ value }) => {
-  return transformer.transform(value).toPercentage(1e18);
+  return transformer.transform(value).toPercentage(100);
 };
 ```
 
