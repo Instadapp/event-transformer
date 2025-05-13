@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      abitype:
-        specifier: ^1.0.8
-        version: 1.0.8(typescript@5.8.3)(zod@3.24.4)
       bignumber.js:
         specifier: ^9.3.0
         version: 9.3.0

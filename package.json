@@ -40,7 +40,6 @@
   },
   "packageManager": "pnpm@10.7.0",
   "dependencies": {
-    "abitype": "^1.0.8",
     "bignumber.js": "^9.3.0",
     "lodash": "^4.17.21",
     "ofetch": "^1.4.1",
