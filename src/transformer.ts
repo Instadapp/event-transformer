@@ -151,10 +151,13 @@ export class EventTransformer {
       toPercentage: (divider: number) => {
         const formatter = Intl.NumberFormat("en", {
           style: "percent",
-          maximumFractionDigits: 2,
         });
 
-        return formatter.format(value / BigInt(divider));
+        return formatter.format(
+          BigNumber((value / BigInt(divider)).toString())
+            .div(100)
+            .toNumber(),
+        );
       },
     };
   }
@@ -172,6 +175,7 @@ export function createAbiSchema<
 export function resolveFieldTransformer<
   TSignature extends string,
   TEvent extends AbiEvent = ExtractEvent<TSignature>,
+  TFields = ReturnType<CreateAbiSchemaReturn<TSignature, TEvent>["fields"]>,
 >(
   fieldTransformer: CreateAbiSchemaReturn<TSignature, TEvent>,
   dataTransformer: EventTransformer,

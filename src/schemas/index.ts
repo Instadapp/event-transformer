@@ -1,3 +1,4 @@
+import type { FormatAbiItem } from "abitype";
 import { createAbiSchema } from "../transformer";
 
 export const schema = createAbiSchema({
@@ -49,10 +50,41 @@ export const schema3 = createAbiSchema({
         .toDecimals(transformer.transform(item.token).toToken());
     },
     borrowRate: ({ value }) => {
-      return transformer.transform(value).toPercentage(1e18);
+      return transformer.transform(value).toPercentage(100);
     },
     utilization: ({ value }) => {
-      return transformer.transform(value).toPercentage(1e18);
+      return transformer.transform(value).toPercentage(100);
+    },
+  }),
+});
+
+// type selam = FormatAbiItem<>;
+
+export const schema4 = createAbiSchema({
+  signature:
+    "event LogUpdateUserSupplyConfigs((address user, address token, uint8 mode, uint256 expandPercent, uint256 expandDuration, uint256 baseWithdrawalLimit)[] userSupplyConfigs)",
+  fields: ({ transformer }) => ({
+    userSupplyConfigs: {
+      user: ({ value }) => {
+        return value;
+      },
+      mode: ({ value }) => {
+        return value;
+      },
+      token: ({ value }) => {
+        return transformer.transform(value).toToken();
+      },
+      expandPercent: ({ value }) => {
+        return transformer.transform(value).toPercentage(100);
+      },
+      expandDuration: ({ value }) => {
+        return value;
+      },
+      baseWithdrawalLimit: ({ value, item }) => {
+        const token = transformer.transform(item.token).toToken();
+
+        return transformer.transform(value).toDecimals(token);
+      },
     },
   }),
 });
