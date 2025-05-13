@@ -1,4 +1,4 @@
-import type { FormatAbiItem } from "abitype";
+// import type { FormatAbiItem } from "abitype";
 import { createAbiSchema } from "../transformer";
 
 export const schema = createAbiSchema({
