@@ -41,4 +41,4 @@ jobs:
           access: public
 
       - name: Publish to Stackblitz
-        run: npx pkg-pr-new publish --compact
+        run: pnpm pkg-pr-new publish
