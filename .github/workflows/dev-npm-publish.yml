@@ -3,7 +3,7 @@ name: dev-npm-publish
 on:
   push:
     branches:
-      - "main"
+      - "master"
 
 jobs:
   dev-npm-publish:
