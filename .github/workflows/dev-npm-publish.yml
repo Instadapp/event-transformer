@@ -1,0 +1,31 @@
+name: dev-npm-publish
+
+on:
+  push:
+    branches:
+      - "master"
+
+jobs:
+  dev-npm-publish:
+    name: dev-npm-publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 20
+      - name: Resolve version
+        id: vars
+        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+      - name: "Version based on commit: 0.0.0-dev.${{ steps.vars.outputs.sha_short }}"
+        run: npm version 0.0.0-dev.${{ steps.vars.outputs.sha_short }} --force --no-git-tag-version
+      - name: Build
+        run: pnpm test && pnpm build
+      - name: Publish Dev Release
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_AUTH_TOKEN }}
+          tag: dev
+          access: public
+      - name: Publish to Stackblitz
+        run: npx pkg-pr-new publish --compact
