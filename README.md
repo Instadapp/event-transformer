@@ -112,4 +112,4 @@ expect(resolved.token.__type).toBe("token");
 expect(typeof resolved.amount).toBe("string");
 ```
 
-Remember to test edge cases and different value formats to ensure robust transformation.
+Remember to test edge cases and different value formats to ensure robust transformation..
